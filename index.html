@@ -7,151 +7,136 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-*{font-family:Inter,sans-serif}
-body{background:#080808;color:#fff}
-.glass{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08)}
+*{font-family:Inter,sans-serif;box-sizing:border-box}
+body{background:#080808;color:#fff;margin:0;overflow-x:hidden}
+.glass{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10)}
 .glass-strong{background:#111111;border:1px solid rgba(255,255,255,0.10)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pulseDot{0%,100%{opacity:1}50%{opacity:0.4}}
 .fade-up{animation:fadeUp 0.6s ease both}
-.reveal{opacity:0;transform:translateY(20px);transition:all 0.6s ease}
-.reveal.active{opacity:1;transform:translateY(0)}
+.platform-btn{transition:all 0.2s ease;white-space:nowrap;border:none!important;outline:none!important}
+.platform-btn.active{background:#ffffff!important;color:#000000!important;box-shadow:0 2px 12px rgba(255,255,255,0.20)}
+.platform-btn:not(.active){background:rgba(255,255,255,0.06)!important;color:rgba(255,255,255,0.70)!important}
+.platform-btn:not(.active):hover{background:rgba(255,255,255,0.12)!important;color:#ffffff!important}
 </style>
 </head>
 <body class="antialiased">
-
 <div class="fixed inset-0 pointer-events-none overflow-hidden">
   <div class="absolute top-[-10%] left-[20%] w-[600px] h-[600px] bg-white/[0.03] rounded-full blur-[100px]"></div>
-  <div class="absolute bottom-[0%] right-[10%] w-[500px] h-[500px] bg-white/[0.02] rounded-full blur-[120px]"></div>
 </div>
 
-<header class="sticky top-0 z-50 backdrop-blur-xl bg-[#080808]/80 border-b border-white/10">
-  <div class="mx-auto max-w-[1200px] px-6 h-[64px] flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <div class="w-8 h-8 rounded-lg bg-white flex items-center justify-center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7V17L12 22L21 17V7L12 2Z" fill="black"/></svg></div>
-      <span class="font-bold text-[16px]">Video Download Hub</span>
+<header class="sticky top-0 z-50 backdrop-blur-xl bg-[#080808]/90 border-b border-white/10">
+  <div class="mx-auto max-w-[1200px] px-4 sm:px-6 h-[60px] flex items-center justify-between">
+    <div class="flex items-center gap-2 sm:gap-3">
+      <div class="w-8 h-8 rounded-lg bg-white flex items-center justify-center flex-shrink-0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7V17L12 22L21 17V7L12 2Z" fill="black"/></svg></div>
+      <span class="font-bold text-[14px] sm:text-[16px]">Video Download Hub</span>
       <span class="text-[10px] px-2 py-0.5 rounded bg-white text-black font-bold tracking-widest">FREE</span>
     </div>
-    <nav class="hidden md:flex items-center gap-6 text-[13px] text-white/60">
-      <a href="#platforms" class="hover:text-white">Platforms</a>
-      <a href="#features" class="hover:text-white">Features</a>
-      <a href="#how" class="hover:text-white">How it works</a>
-    </nav>
-    <div class="flex items-center gap-3">
-      <div class="hidden md:flex items-center gap-2 text-[11px] text-white/50 glass px-3 py-1 rounded-full">
-        <div class="w-2 h-2 bg-green-400 rounded-full" style="animation:pulseDot 1.5s infinite"></div> 100% Free
-      </div>
-      <button onclick="document.getElementById('downloader').scrollIntoView({behavior:'smooth'})" class="h-9 px-5 rounded-full bg-white text-black text-[13px] font-semibold hover:bg-white/90 transition">Download Now</button>
+    <div class="hidden sm:flex items-center gap-2 text-[11px] text-white/50 glass px-3 py-1 rounded-full">
+      <div class="w-2 h-2 bg-green-400 rounded-full" style="animation:pulseDot 1.5s infinite"></div> 100% Free • No Login
     </div>
   </div>
 </header>
 
-<div class="mx-auto max-w-[728px] px-6 py-4">
-  <div style="background:#0F0F0F;border:1px solid #222;border-radius:12px;height:90px;display:flex;align-items:center;justify-content:center;position:relative">
+<div class="mx-auto max-w-[728px] px-3 sm:px-6 py-3 sm:py-4">
+  <div style="background:#0F0F0F;border:1px solid #222;border-radius:12px;min-height:90px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
     <span style="position:absolute;top:6px;left:8px;font-size:9px;letter-spacing:0.1em;color:rgba(255,255,255,0.25)">ADVERTISEMENT</span>
-    <div id="adsterra-top-728x90">
-      <!-- PASTE YOUR ADSTERRA TOP BANNER CODE HERE -->
-      <span style="color:rgba(255,255,255,0.2);font-size:12px">Top Banner 728x90 - Adsterra Code Here</span>
-    </div>
+    <div id="adsterra-top-728x90" class="w-full flex justify-center p-2"><span style="color:rgba(255,255,255,0.2);font-size:12px;text-align:center">Top Banner - Adsterra Code Here</span></div>
   </div>
 </div>
 
-<section class="relative z-10 pt-16 pb-12">
-  <div class="mx-auto max-w-[900px] px-6 text-center">
-    <div class="inline-flex items-center gap-2 glass px-3 py-1.5 rounded-full mb-6 text-[12px] text-white/70">
+<section class="relative z-10 pt-8 sm:pt-16 pb-8 sm:pb-12">
+  <div class="mx-auto max-w-[900px] px-4 sm:px-6 text-center">
+    <div class="inline-flex items-center gap-2 glass px-3 py-1.5 rounded-full mb-4 sm:mb-6 text-[11px] sm:text-[12px] text-white/70">
       <span class="w-2 h-2 bg-green-400 rounded-full"></span> Trusted by 2.4M+ users • No watermark • Free forever
     </div>
+    <h1 class="text-[28px] sm:text-[38px] md:text-[56px] font-bold leading-tight tracking-tight fade-up px-2">Download videos<br><span class="text-white/40">in any quality you want.</span></h1>
+    <p class="text-[13px] sm:text-[15px] text-white/50 max-w-[500px] mx-auto mt-3 sm:mt-4 leading-relaxed fade-up px-4" style="animation-delay:0.1s">Paste any link from YouTube, Instagram, TikTok or Facebook. Choose quality from 480p to 4K. No watermark, no limits.</p>
 
-    <h1 class="text-[38px] md:text-[56px] font-bold leading-tight tracking-tight fade-up">
-      Download videos<br>
-      <span class="text-white/40">in any quality you want.</span>
-    </h1>
-    <p class="text-[15px] text-white/50 max-w-[500px] mx-auto mt-4 leading-relaxed fade-up" style="animation-delay:0.1s">
-      Paste any link from YouTube, Instagram, TikTok or Facebook. Choose quality from 480p to 4K. No watermark, no limits, no login.
-    </p>
-
-    <div class="flex flex-wrap justify-center gap-2 mt-8 fade-up" style="animation-delay:0.2s">
-      <button data-platform="youtube" class="platform-btn active flex items-center gap-2 px-4 py-2 rounded-full bg-white text-black text-[13px] font-medium">
-        <svg width="20" height="14" viewBox="0 0 28 20"><path d="M27.97 3.12C27.64 1.78 26.59 0.72 25.25 0.39C23.02 0 14 0 14 0C14 0 4.98 0 2.75 0.39C1.41 0.72 0.36 1.78 0.03 3.12C0 4.14 0 10 0 10C0 10 0 15.86 0.03 16.88C0.36 18.22 1.41 19.28 2.75 19.61C4.98 20 14 20 14 20C14 20 23.02 20 25.25 19.61C26.59 19.28 27.64 18.22 27.97 16.88C28 15.86 28 10 28 10C28 10 28 4.14 27.97 3.12Z" fill="#FF0000"/><path d="M19.11 9.99L11.09 5.5V14.48L19.11 9.99Z" fill="white"/></svg>
-        YouTube
-      </button>
-      <button data-platform="instagram" class="platform-btn flex items-center gap-2 px-4 py-2 rounded-full glass text-white/70 text-[13px] hover:bg-white/10">
-        <svg width="16" height="16" viewBox="0 0 24 24"><defs><linearGradient id="ig" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#feda75"/><stop offset="50%" stop-color="#d62976"/><stop offset="100%" stop-color="#4f5bd5"/></linearGradient></defs><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" fill="url(#ig)"/></svg>
-        Instagram
-      </button>
-      <button data-platform="tiktok" class="platform-btn flex items-center gap-2 px-4 py-2 rounded-full glass text-white/70 text-[13px] hover:bg-white/10">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52V6.72a4.85 4.85 0 0 1-1.04-.03z"/></svg>
-        TikTok
-      </button>
-      <button data-platform="facebook" class="platform-btn flex items-center gap-2 px-4 py-2 rounded-full glass text-white/70 text-[13px] hover:bg-white/10">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-        Facebook
-      </button>
-    </div>
-
-    <!-- DOWNLOADER CARD - SAME AS BEFORE -->
-    <div id="downloader" class="mt-12 mx-auto max-w-[640px] glass-strong rounded-[20px] p-6 md:p-8 text-left">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="font-semibold text-[15px]">Paste video link</h3>
-        <span id="selectedQualityBadge" class="text-[11px] text-white/40 glass px-2.5 py-1 rounded-full">1080P • Ready to download</span>
-      </div>
-      
-      <div class="flex items-center gap-3 glass rounded-full px-4 h-[52px] focus-within:border-white/20 border border-transparent transition">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-opacity="0.4" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-        <input id="urlInput" type="text" placeholder="https://www.youtube.com/watch?v=..." class="flex-1 bg-transparent outline-none text-[14px] placeholder:text-white/30">
-        <button id="downloadBtn" class="h-8 px-4 rounded-full bg-white text-black text-[13px] font-semibold flex items-center gap-2">
-          <span id="btnText">Download</span>
-          <span id="btnArrow">→</span>
-          <span id="btnLoader" class="hidden">⏳</span>
+    <!-- PLATFORM BUTTONS - NO WHITE BORDER LINE FIX -->
+    <div class="mt-8 sm:mt-10 fade-up flex justify-center" style="animation-delay:0.2s">
+      <div class="inline-flex flex-wrap justify-center gap-2 sm:gap-2.5 p-1.5 rounded-full bg-white/[0.04] border border-white/5">
+        <button data-platform="youtube" class="platform-btn active flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full text-[13px] font-medium">
+          <svg width="20" height="14" viewBox="0 0 28 20"><path d="M27.97 3.12C27.64 1.78 26.59 0.72 25.25 0.39C23.02 0 14 0 14 0C14 0 4.98 0 2.75 0.39C1.41 0.72 0.36 1.78 0.03 3.12C0 4.14 0 10 0 10C0 10 0 15.86 0.03 16.88C0.36 18.22 1.41 19.28 2.75 19.61C4.98 20 14 20 14 20C14 20 23.02 20 25.25 19.61C26.59 19.28 27.64 18.22 27.97 16.88C28 15.86 28 10 28 10C28 10 28 4.14 27.97 3.12Z" fill="#FF0000"/><path d="M19.11 9.99L11.09 5.5V14.48L19.11 9.99Z" fill="white"/></svg>
+          YouTube
+        </button>
+        <button data-platform="instagram" class="platform-btn flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full text-[13px]">
+          <svg width="16" height="16" viewBox="0 0 24 24"><defs><linearGradient id="ig6" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#feda75"/><stop offset="50%" stop-color="#d62976"/><stop offset="100%" stop-color="#4f5bd5"/></linearGradient></defs><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" fill="url(#ig6)"/></svg>
+          Instagram
+        </button>
+        <button data-platform="tiktok" class="platform-btn flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full text-[13px]">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52V6.72a4.85 4.85 0 0 1-1.04-.03z"/></svg>
+          TikTok
+        </button>
+        <button data-platform="facebook" class="platform-btn flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full text-[13px]">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          Facebook
         </button>
       </div>
+    </div>
 
-      <div id="qualitySelector" class="hidden mt-5">
-        <p class="text-[12px] text-white/40 mb-3">Choose quality</p>
-        <div class="grid grid-cols-3 gap-2">
-          <button data-quality="best" class="quality-btn bg-white/5 border border-white/10 rounded-full h-9 text-[12px]">Best</button>
-          <button data-quality="1080p" class="quality-btn bg-white text-black rounded-full h-9 text-[12px] font-semibold">1080p</button>
-          <button data-quality="720p" class="quality-btn bg-white/5 border border-white/10 rounded-full h-9 text-[12px]">720p</button>
-          <button data-quality="480p" class="quality-btn bg-white/5 border border-white/10 rounded-full h-9 text-[12px]">480p</button>
-          <button data-quality="4k" class="quality-btn bg-white/5 border border-white/10 rounded-full h-9 text-[12px]">4K</button>
-          <button data-quality="mp3-320" class="quality-btn bg-white/5 border border-white/10 rounded-full h-9 text-[12px]">MP3</button>
+    <div id="downloader" class="mt-8 sm:mt-12 mx-auto max-w-[640px] glass-strong rounded-[16px] sm:rounded-[20px] p-4 sm:p-6 md:p-8 text-left">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+        <h3 class="font-semibold text-[14px] sm:text-[15px]">Paste video link</h3>
+        <span id="selectedQualityBadge" class="text-[10px] sm:text-[11px] text-white/40 glass px-2.5 py-1 rounded-full w-fit">1080P • Ready to download</span>
+      </div>
+      
+      <div class="flex flex-col gap-3">
+        <div class="glass rounded-full px-4 h-[48px] sm:h-[52px] flex items-center gap-3 border border-transparent focus-within:border-white/20 transition">
+          <svg class="flex-shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-opacity="0.4" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          <input id="urlInput" type="text" placeholder="https://www.youtube.com/watch?v=..." class="flex-1 bg-transparent outline-none text-[13px] sm:text-[14px] placeholder:text-white/30 min-w-0">
+        </div>
+        <div class="flex justify-end">
+          <button id="downloadBtn" class="h-[44px] sm:h-[40px] w-full sm:w-auto px-6 sm:px-5 rounded-full bg-white text-black text-[13px] font-semibold flex items-center justify-center gap-2">
+            <span id="btnText">Download</span>
+            <span id="btnArrow">→</span>
+            <span id="btnLoader" class="hidden">⏳</span>
+          </button>
         </div>
       </div>
 
-      <div id="resultCard" class="hidden mt-6 glass rounded-xl p-4 flex gap-4">
-        <img id="videoThumb" src="" class="w-24 h-16 object-cover rounded-lg bg-white/10">
+      <div id="qualitySelector" class="hidden mt-4 sm:mt-5">
+        <p class="text-[11px] sm:text-[12px] text-white/40 mb-3">Choose quality</p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <button data-quality="best" class="quality-btn bg-white/5 border border-white/10 rounded-full h-9 text-[11px] sm:text-[12px]">Best</button>
+          <button data-quality="1080p" class="quality-btn bg-white text-black rounded-full h-9 text-[11px] sm:text-[12px] font-semibold">1080p Full HD</button>
+          <button data-quality="720p" class="quality-btn bg-white/5 border border-white/10 rounded-full h-9 text-[11px] sm:text-[12px]">720p HD</button>
+          <button data-quality="480p" class="quality-btn bg-white/5 border border-white/10 rounded-full h-9 text-[11px] sm:text-[12px]">480p</button>
+          <button data-quality="4k" class="quality-btn bg-white/5 border border-white/10 rounded-full h-9 text-[11px] sm:text-[12px]">4K Ultra</button>
+          <button data-quality="mp3-320" class="quality-btn bg-white/5 border border-white/10 rounded-full h-9 text-[11px] sm:text-[12px]">MP3 320kbps</button>
+        </div>
+      </div>
+
+      <div id="resultCard" class="hidden mt-4 sm:mt-6 glass rounded-xl p-3 sm:p-4 flex gap-3 sm:gap-4">
+        <img id="videoThumb" src="" class="w-16 h-12 sm:w-24 sm:h-16 object-cover rounded-lg bg-white/10 flex-shrink-0">
         <div class="flex-1 min-w-0">
-          <p id="videoTitle" class="text-[13px] font-medium line-clamp-2"></p>
-          <p id="videoMeta" class="text-[11px] text-white/40 mt-1"></p>
-          <button id="finalDownload" class="mt-3 h-9 px-5 rounded-full bg-white text-black text-[12px] font-semibold">⬇️ Download Video</button>
+          <p id="videoTitle" class="text-[12px] sm:text-[13px] font-medium line-clamp-2"></p>
+          <p id="videoMeta" class="text-[10px] sm:text-[11px] text-white/40 mt-1"></p>
+          <button id="finalDownload" class="mt-2 sm:mt-3 h-8 sm:h-9 px-4 sm:px-5 rounded-full bg-white text-black text-[11px] sm:text-[12px] font-semibold">⬇️ Download Video</button>
         </div>
       </div>
 
-      <div class="grid grid-cols-3 gap-2 mt-6 text-center">
-        <div class="text-[12px] glass rounded-lg p-2.5">✓ No watermark</div>
-        <div class="text-[12px] glass rounded-lg p-2.5">✓ 480p to 4K</div>
-        <div class="text-[12px] glass rounded-lg p-2.5">✓ No login needed</div>
-        <div class="text-[12px] glass rounded-lg p-2.5">✓ Fast and private</div>
-        <div class="text-[12px] glass rounded-lg p-2.5">✓ Works everywhere</div>
-        <div class="text-[12px] glass rounded-lg p-2.5">✓ All platforms</div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-4 sm:mt-6 text-center">
+        <div class="text-[11px] sm:text-[12px] glass rounded-lg p-2 sm:p-2.5">✓ No watermark</div>
+        <div class="text-[11px] sm:text-[12px] glass rounded-lg p-2.5">✓ 480p to 4K</div>
+        <div class="text-[11px] sm:text-[12px] glass rounded-lg p-2.5">✓ No login needed</div>
+        <div class="text-[11px] sm:text-[12px] glass rounded-lg p-2.5">✓ Fast and private</div>
+        <div class="text-[11px] sm:text-[12px] glass rounded-lg p-2.5">✓ Works everywhere</div>
+        <div class="text-[11px] sm:text-[12px] glass rounded-lg p-2.5">✓ All platforms</div>
       </div>
     </div>
-    <button onclick="document.getElementById('downloader').scrollIntoView({behavior:'smooth'})" class="mt-8 h-11 px-7 rounded-full bg-white text-black font-semibold text-[14px]">Start Downloading Free</button>
   </div>
 </section>
 
-<div class="mx-auto max-w-[728px] px-6 py-8">
-  <div style="background:#0F0F0F;border:1px solid #222;border-radius:12px;height:90px;display:flex;align-items:center;justify-content:center;position:relative">
+<div class="mx-auto max-w-[728px] px-3 sm:px-6 py-6 sm:py-8">
+  <div style="background:#0F0F0F;border:1px solid #222;border-radius:12px;min-height:90px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
     <span style="position:absolute;top:6px;left:8px;font-size:9px;letter-spacing:0.1em;color:rgba(255,255,255,0.25)">ADVERTISEMENT</span>
-    <div id="adsterra-bottom-728x90">
-      <!-- PASTE YOUR ADSTERRA BOTTOM BANNER CODE HERE -->
-      <span style="color:rgba(255,255,255,0.2);font-size:12px">Bottom Banner 728x90 - Adsterra Code Here</span>
-    </div>
+    <div id="adsterra-bottom-728x90" class="w-full flex justify-center p-2"><span style="color:rgba(255,255,255,0.2);font-size:12px;text-align:center">Bottom Banner - Adsterra Code Here</span></div>
   </div>
 </div>
 
-<footer class="border-t border-white/5 py-6">
-  <div class="mx-auto max-w-[1200px] px-6 flex justify-between text-[12px] text-white/30">
+<footer class="border-t border-white/5 py-4 sm:py-6">
+  <div class="mx-auto max-w-[1200px] px-4 sm:px-6 flex flex-col sm:flex-row justify-between gap-2 text-[11px] sm:text-[12px] text-white/30 text-center sm:text-left">
     <span>© 2026 Video Download Hub — Free forever</span>
     <span>Privacy • Terms • No tracking</span>
   </div>
@@ -159,7 +144,6 @@ body{background:#080808;color:#fff}
 
 <script>
 const API_BASE = 'https://videodownload-oaaf.onrender.com';
-
 const input=document.getElementById('urlInput');
 const btn=document.getElementById('downloadBtn');
 const btnText=document.getElementById('btnText');
@@ -168,58 +152,12 @@ const btnLoader=document.getElementById('btnLoader');
 const qualitySel=document.getElementById('qualitySelector');
 const resultCard=document.getElementById('resultCard');
 let selectedQuality='1080p';
-
-function mapQuality(q){
-  const map = {'480p':'480','720p':'720','1080p':'1080','4k':'best','best':'best','mp3-320':'mp3-320','mp3-128':'mp3-128'};
-  return map[q] || '1080';
-}
-
-input.addEventListener('input',e=>{
-  if(e.target.value.trim().length>8){ qualitySel.classList.remove('hidden'); }
-  else{ qualitySel.classList.add('hidden'); }
-});
-
-document.querySelectorAll('.quality-btn').forEach(b=>{
-  b.addEventListener('click',()=>{
-    document.querySelectorAll('.quality-btn').forEach(x=>{x.classList.remove('bg-white','text-black');x.classList.add('bg-white/5','border','border-white/10');});
-    b.classList.remove('bg-white/5','border','border-white/10');b.classList.add('bg-white','text-black');
-    selectedQuality=b.dataset.quality;
-    document.getElementById('selectedQualityBadge').innerText=selectedQuality.toUpperCase()+' • Ready to download';
-  });
-});
-
-document.querySelectorAll('.platform-btn').forEach(b=>{
-  b.addEventListener('click',()=>{
-    document.querySelectorAll('.platform-btn').forEach(x=>{x.classList.remove('bg-white','text-black');x.classList.add('glass','text-white/70');});
-    b.classList.add('bg-white','text-black');b.classList.remove('glass','text-white/70');
-  });
-});
-
-btn.addEventListener('click', async ()=>{
-  const url = input.value.trim();
-  if(!url){input.focus();return;}
-  btnText.innerText='Fetching...';btnArrow.classList.add('hidden');btnLoader.classList.remove('hidden');btn.disabled=true;
-  try{
-    const res = await fetch(`${API_BASE}/api/info`,{method:'POST',headers:{'Content-Type':'application/json'},body: JSON.stringify({url})});
-    if(!res.ok){const err = await res.json().catch(()=>({error:'Server error'}));throw new Error(err.error || 'Failed');}
-    const data = await res.json();
-    document.getElementById('videoTitle').innerText = data.title || 'Video ready';
-    if(data.thumbnail) document.getElementById('videoThumb').src = data.thumbnail;
-    document.getElementById('selectedQualityBadge').innerText = (data.uploader ? data.uploader + ' • ' : '') + selectedQuality.toUpperCase() + ' • ' + (data.duration || '');
-    resultCard.classList.remove('hidden');
-    resultCard.scrollIntoView({behavior:'smooth'});
-  }catch(e){alert('Error: ' + e.message + '\n\nNote: Free server pehla request 40-50 sec leta hai. Dobara try karo.');}
-  finally{btnText.innerText='Download';btnArrow.classList.remove('hidden');btnLoader.classList.add('hidden');btn.disabled=false;}
-});
-
-document.getElementById('finalDownload').addEventListener('click', function(){
-  const url = input.value.trim(); if(!url) return;
-  const orig = this.innerText; this.innerText='⏳ Downloading...'; this.disabled=true;
-  const backendQuality = mapQuality(selectedQuality);
-  const downloadUrl=`${API_BASE}/api/download?url=${encodeURIComponent(url)}&quality=${encodeURIComponent(backendQuality)}`;
-  const a=document.createElement('a'); a.href=downloadUrl; a.setAttribute('download',''); document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  setTimeout(()=>{this.innerText=orig; this.disabled=false;},3000);
-});
+function mapQuality(q){const m={'480p':'480','720p':'720','1080p':'1080','4k':'best','best':'best','mp3-320':'mp3-320'};return m[q]||'1080';}
+input.addEventListener('input',e=>{if(e.target.value.trim().length>8){qualitySel.classList.remove('hidden');}else{qualitySel.classList.add('hidden');}});
+document.querySelectorAll('.quality-btn').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.quality-btn').forEach(x=>{x.classList.remove('bg-white','text-black');x.classList.add('bg-white/5','border','border-white/10');});b.classList.remove('bg-white/5','border','border-white/10');b.classList.add('bg-white','text-black');selectedQuality=b.dataset.quality;document.getElementById('selectedQualityBadge').innerText=selectedQuality.toUpperCase()+' • Ready to download';});});
+document.querySelectorAll('.platform-btn').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.platform-btn').forEach(x=>{x.classList.remove('active');});b.classList.add('active');});});
+btn.addEventListener('click', async ()=>{const url=input.value.trim();if(!url){input.focus();return;}btnText.innerText='Fetching...';btnArrow.classList.add('hidden');btnLoader.classList.remove('hidden');btn.disabled=true;try{const res=await fetch(`${API_BASE}/api/info`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url})});if(!res.ok){const err=await res.json().catch(()=>({error:'Server error'}));throw new Error(err.error||'Failed');}const data=await res.json();document.getElementById('videoTitle').innerText=data.title||'Video ready';if(data.thumbnail)document.getElementById('videoThumb').src=data.thumbnail;document.getElementById('selectedQualityBadge').innerText=(data.uploader?data.uploader+' • ':'')+selectedQuality.toUpperCase()+' • '+(data.duration||'');resultCard.classList.remove('hidden');resultCard.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){alert('Error: '+e.message+'\n\nNote: Free server pehla request 40-50 sec leta hai. Dobara try karo.');}finally{btnText.innerText='Download';btnArrow.classList.remove('hidden');btnLoader.classList.add('hidden');btn.disabled=false;}});
+document.getElementById('finalDownload').addEventListener('click',function(){const url=input.value.trim();if(!url)return;const orig=this.innerText;this.innerText='⏳ Downloading...';this.disabled=true;const backendQuality=mapQuality(selectedQuality);const downloadUrl=`${API_BASE}/api/download?url=${encodeURIComponent(url)}&quality=${encodeURIComponent(backendQuality)}`;const a=document.createElement('a');a.href=downloadUrl;a.setAttribute('download','');document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(()=>{this.innerText=orig;this.disabled=false;},3000);});
 </script>
 </body>
 </html>
