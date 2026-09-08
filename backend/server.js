@@ -8,19 +8,24 @@ const crypto = require('crypto');
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-app.use(cors({ origin: '*', methods: ['GET','POST','OPTIONS'], allowedHeaders: ['Content-Type'] }));
-app.use(express.json());
+app.use(cors({ origin: '*', methods: ['GET','POST','OPTIONS'], allowedHeaders: ['Content-Type','Authorization'] }));
+app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 const TEMP_DIR = path.join(__dirname, 'temp');
 if (!fs.existsSync(TEMP_DIR)) fs.mkdirSync(TEMP_DIR, { recursive: true });
 
 app.get('/', (req, res) => {
-    res.json({ status: '✅ Video Download Hub Running', youtube: 'Piped + Android fallback' });
+    res.json({ 
+        status: '✅ Video Download Hub - LATEST 2026',
+        version: 'v4.0 - Piped + Android + All Platforms',
+        platforms: ['YouTube (Piped fix)', 'Instagram', 'TikTok', 'Facebook'],
+        updated: new Date().toISOString()
+    });
 });
 
 function getBaseCmd(url) {
-    let base = 'yt-dlp --no-playlist --no-warnings --no-check-certificate --no-cache-dir';
+    let base = 'yt-dlp --no-playlist --no-warnings --no-check-certificate --no-cache-dir --prefer-free-formats';
     base += ' --user-agent "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36"';
     if (url.includes('youtube.com') || url.includes('youtu.be')) {
         base += ' --extractor-args "youtube:player_client=android,web" --extractor-args "youtube:skip=hls,dash"';
@@ -29,42 +34,31 @@ function getBaseCmd(url) {
 }
 
 function extractYTId(url) {
-    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([^&\n?#]+)/);
-    return match ? match[1] : '';
+    const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/|youtube\.com\/embed\/)([^&\n?#]+)/);
+    return m ? m[1] : '';
 }
 
-// Piped API - YouTube ke liye free alternative
 async function fetchYTViaPiped(videoId) {
-    const pipedInstances = [
+    const instances = [
         'https://pipedapi.kavin.rocks',
         'https://api.piped.private.coffee',
         'https://pipedapi.moomoo.me',
-        'https://pipedapi.adminforge.de'
+        'https://pipedapi.adminforge.de',
+        'https://pipedapi.leptun.cz'
     ];
-    for (const instance of pipedInstances) {
+    for (const inst of instances) {
         try {
-            console.log(`[PIPED] Trying ${instance}/streams/${videoId}`);
-            const controller = new AbortController();
-            const timeout = setTimeout(() => controller.abort(), 12000);
-            const res = await fetch(`${instance}/streams/${videoId}`, { signal: controller.signal, headers: { 'Accept': 'application/json' } });
-            clearTimeout(timeout);
-            if (!res.ok) continue;
-            const data = await res.json();
-            if (data.title) {
-                console.log(`[PIPED SUCCESS] ${data.title.slice(0,60)}`);
-                return {
-                    title: data.title,
-                    thumbnail: data.thumbnailUrl || `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
-                    uploader: data.uploader || 'YouTube',
-                    duration: data.duration ? `${Math.floor(data.duration/60)}:${String(data.duration%60).padStart(2,'0')}` : '',
-                    platform: 'youtube',
-                    pipedData: data
-                };
+            const ctrl = new AbortController();
+            const t = setTimeout(() => ctrl.abort(), 10000);
+            const r = await fetch(`${inst}/streams/${videoId}`, { signal: ctrl.signal, headers: { 'Accept': 'application/json' } });
+            clearTimeout(t);
+            if (!r.ok) continue;
+            const d = await r.json();
+            if (d.title) {
+                console.log(`[PIPED OK] ${inst} -> ${d.title.slice(0,50)}`);
+                return d;
             }
-        } catch (e) {
-            console.log(`[PIPED FAIL] ${instance}: ${e.message}`);
-            continue;
-        }
+        } catch (e) { continue; }
     }
     return null;
 }
@@ -75,19 +69,19 @@ async function handleInfo(req, res) {
     console.log(`[INFO] ${url}`);
     const isYouTube = url.includes('youtube.com') || url.includes('youtu.be');
 
-    // YouTube ke liye pehle Piped try karo (fast + reliable)
     if (isYouTube) {
-        const videoId = extractYTId(url);
-        if (videoId) {
-            const pipedInfo = await fetchYTViaPiped(videoId);
-            if (pipedInfo) {
+        const vid = extractYTId(url);
+        if (vid) {
+            const piped = await fetchYTViaPiped(vid);
+            if (piped) {
                 return res.json({
-                    title: pipedInfo.title,
-                    thumbnail: pipedInfo.thumbnail,
-                    uploader: pipedInfo.uploader,
-                    duration: pipedInfo.duration,
+                    title: piped.title,
+                    thumbnail: piped.thumbnailUrl || `https://img.youtube.com/vi/${vid}/hqdefault.jpg`,
+                    uploader: piped.uploader || 'YouTube',
+                    duration: piped.duration ? `${Math.floor(piped.duration/60)}:${String(piped.duration%60).padStart(2,'0')}` : '',
                     platform: 'youtube',
-                    via: 'piped'
+                    via: 'piped',
+                    videoId: vid
                 });
             }
         }
@@ -98,18 +92,16 @@ async function handleInfo(req, res) {
         if (!err && stdout) {
             try {
                 const info = JSON.parse(stdout);
-                console.log(`[INFO SUCCESS yt-dlp] ${info.title?.slice(0,60)}`);
                 return res.json({
                     title: info.title || 'Video',
                     thumbnail: info.thumbnail || (info.thumbnails?.length ? info.thumbnails[info.thumbnails.length-1].url : ''),
                     uploader: info.uploader || info.channel || '',
                     duration: info.duration_string || '',
-                    platform: info.extractor || 'youtube',
+                    platform: info.extractor || 'unknown',
                 });
             } catch {}
         }
-        console.error('[INFO FAIL yt-dlp]', stderr?.slice(0,600));
-        // Last fallback: simple yt-dlp
+        console.log(`[INFO FAIL] ${stderr?.slice(0,500)}`);
         exec(`yt-dlp --no-playlist --dump-json --no-warnings "${url.replace(/"/g, '\\"')}"`, { maxBuffer: 1024*1024*20, timeout: 90000 }, async (e2, s2) => {
             if (!e2 && s2) {
                 try {
@@ -123,22 +115,21 @@ async function handleInfo(req, res) {
                     });
                 } catch {}
             }
-            // Agar YouTube hai to dobara Piped try with direct thumbnail
             if (isYouTube) {
-                const videoId = extractYTId(url);
-                if (videoId) {
+                const vid = extractYTId(url);
+                if (vid) {
                     return res.json({
-                        title: `YouTube Video ${videoId}`,
-                        thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+                        title: `YouTube Video`,
+                        thumbnail: `https://img.youtube.com/vi/${vid}/hqdefault.jpg`,
                         uploader: 'YouTube',
                         duration: '',
                         platform: 'youtube',
                         via: 'thumbnail-fallback',
-                        warning: 'Info limited due to IP block, but download will work'
+                        videoId: vid
                     });
                 }
             }
-            return res.status(500).json({ error: 'Failed to fetch info. Link invalid ya private video hai.', details: stderr?.slice(0,800) });
+            return res.status(500).json({ error: 'Failed to fetch info. Link invalid ya private video hai.', details: stderr?.slice(0,600) });
         });
     });
 }
@@ -153,48 +144,52 @@ async function handleDownload(req, res) {
 
     const id = crypto.randomBytes(8).toString('hex');
     const isYouTube = url.includes('youtube.com') || url.includes('youtu.be');
+    const vid = isYouTube ? extractYTId(url) : null;
 
-    // YouTube ke liye Piped se direct download
-    if (isYouTube) {
-        const videoId = extractYTId(url);
-        if (videoId) {
-            try {
-                const pipedInstances = [
-                    'https://pipedapi.kavin.rocks',
-                    'https://api.piped.private.coffee',
-                    'https://pipedapi.moomoo.me'
-                ];
-                for (const instance of pipedInstances) {
-                    try {
-                        const controller = new AbortController();
-                        const timeout = setTimeout(() => controller.abort(), 12000);
-                        const resPiped = await fetch(`${instance}/streams/${videoId}`, { signal: controller.signal });
-                        clearTimeout(timeout);
-                        if (!resPiped.ok) continue;
-                        const data = await resPiped.json();
-                        // Best quality video stream
-                        let videoUrl = null;
-                        if (data.videoStreams && data.videoStreams.length > 0) {
-                            // 1080p, 720p prefer
-                            const q = quality.toString();
-                            let filtered = data.videoStreams.filter(s => s.mimeType && s.mimeType.includes('mp4'));
-                            if (q.includes('1080')) filtered = filtered.filter(s => s.quality && s.quality.includes('1080'));
-                            else if (q.includes('720')) filtered = filtered.filter(s => s.quality && s.quality.includes('720'));
-                            filtered.sort((a,b) => (parseInt(b.quality)||0) - (parseInt(a.quality)||0));
-                            videoUrl = (filtered[0] || data.videoStreams[0]).url;
-                        }
-                        if (videoUrl) {
-                            console.log(`[YT PIPED DOWNLOAD] ${videoUrl.slice(0,80)}`);
-                            // Redirect to piped URL for direct download (no popup, direct)
-                            return res.json({ downloadUrl: videoUrl, via: 'piped', title: data.title, direct: true });
-                        }
-                    } catch (e) { continue; }
+    // YOUTUBE - Try Piped first for instant download link
+    if (isYouTube && vid) {
+        try {
+            const piped = await fetchYTViaPiped(vid);
+            if (piped && piped.videoStreams && piped.videoStreams.length > 0) {
+                let streams = piped.videoStreams.filter(s => s.mimeType && s.mimeType.includes('mp4'));
+                const q = quality.toString();
+                if (q.includes('1080')) {
+                    const f = streams.filter(s => s.quality && s.quality.includes('1080'));
+                    if (f.length) streams = f;
+                } else if (q.includes('720')) {
+                    const f = streams.filter(s => s.quality && s.quality.includes('720'));
+                    if (f.length) streams = f;
+                } else if (q.includes('480')) {
+                    const f = streams.filter(s => s.quality && s.quality.includes('480'));
+                    if (f.length) streams = f;
                 }
-            } catch {}
+                streams.sort((a,b) => (parseInt(b.height||b.quality)||0) - (parseInt(a.height||a.quality)||0));
+                const best = streams[0] || piped.videoStreams[0];
+                if (best && best.url) {
+                    console.log(`[YT PIPED DIRECT] ${best.quality} -> ${best.url.slice(0,80)}`);
+                    // Return direct URL - frontend will download it directly (no popup)
+                    if (req.query.direct === 'true' || req.body.direct === true) {
+                        return res.json({ downloadUrl: best.url, title: piped.title, via: 'piped', direct: true });
+                    }
+                    // Otherwise proxy download via server to avoid CORS
+                    const outputFile = path.join(TEMP_DIR, `${id}.mp4`);
+                    const dlCmd = `curl -L -o "${outputFile}" -A "Mozilla/5.0" "${best.url.replace(/"/g, '\\"')}"`;
+                    exec(dlCmd, { maxBuffer: 1024*1024*300, timeout: 180000 }, (err) => {
+                        if (!err && fs.existsSync(outputFile) && fs.statSync(outputFile).size > 10000) {
+                            return sendFile(id, res);
+                        }
+                        // Fallback to direct URL json
+                        return res.json({ downloadUrl: best.url, title: piped.title, via: 'piped', direct: true });
+                    });
+                    return;
+                }
+            }
+        } catch (e) {
+            console.log(`[PIPED DOWNLOAD ERROR] ${e.message}`);
         }
     }
 
-    // Normal yt-dlp download for all platforms
+    // ALL PLATFORMS - yt-dlp download
     let format = 'best';
     if (isYouTube) {
         const q = quality.toString().toLowerCase();
@@ -211,23 +206,23 @@ async function handleDownload(req, res) {
 
     let cmd = '';
     if (isAudio) {
-        const audioQ = qLower.includes('320')? '0' : '5';
-        cmd = `${base} -f "bestaudio/best" -o "${outputTemplate}" --extract-audio --audio-format mp3 --audio-quality ${audioQ} "${url.replace(/"/g, '\\"')}"`;
+        const aq = qLower.includes('320') ? '0' : '5';
+        cmd = `${base} -f "bestaudio/best" -o "${outputTemplate}" --extract-audio --audio-format mp3 --audio-quality ${aq} "${url.replace(/"/g, '\\"')}"`;
     } else {
         cmd = `${base} -f "${format}" -o "${outputTemplate}" --merge-output-format mp4 "${url.replace(/"/g, '\\"')}"`;
     }
 
-    console.log(`[DOWNLOAD] ${url.slice(0,70)} | ${quality} | ${format}`);
+    console.log(`[DOWNLOAD] ${url.slice(0,70)} | ${isYouTube?'YT':'OTHER'} | ${quality} | ${format}`);
 
-    exec(cmd, { maxBuffer: 1024*1024*200, timeout: 180000 }, (err, stdout, stderr) => {
+    exec(cmd, { maxBuffer: 1024*1024*300, timeout: 180000 }, (err, stdout, stderr) => {
         if (err) {
-            console.error('[DL FAIL 1]', stderr?.slice(0,800));
+            console.log(`[DL FAIL] ${stderr?.slice(0,700)}`);
             const fb1 = `${base} -f "best" -o "${outputTemplate}" --merge-output-format mp4 "${url.replace(/"/g, '\\"')}"`;
-            exec(fb1, { maxBuffer: 1024*1024*200, timeout: 180000 }, (err2) => {
+            exec(fb1, { maxBuffer: 1024*1024*300, timeout: 180000 }, (err2) => {
                 if (err2) {
                     const fb2 = `yt-dlp -f "best" -o "${outputTemplate}" "${url.replace(/"/g, '\\"')}"`;
-                    exec(fb2, { maxBuffer: 1024*1024*200, timeout: 180000 }, (err3) => {
-                        if (err3) return res.status(500).json({ error: 'Download failed. YouTube IP block hai, thodi der baad try karo.', details: stderr?.slice(0,800) });
+                    exec(fb2, { maxBuffer: 1024*1024*300, timeout: 180000 }, (err3) => {
+                        if (err3) return res.status(500).json({ error: 'Download failed. YouTube ke liye thodi der baad try karo, IG/FB/TT 100% working hai.', details: stderr?.slice(0,700) });
                         return sendFile(id, res);
                     });
                     return;
@@ -245,9 +240,9 @@ async function handleDownload(req, res) {
             if (!files.length) return res.status(500).json({ error: 'File not found after download' });
             const target = files.find(f=>f.endsWith('.mp4')||f.endsWith('.mp3')||f.endsWith('.webm'))||files[0];
             const filePath = path.join(TEMP_DIR, target);
+            if (!fs.existsSync(filePath) || fs.statSync(filePath).size < 1000) return res.status(500).json({ error: 'File too small or corrupted' });
             const ext = target.split('.').pop();
             const cleanName = `VideoDownloadHub_${Date.now()}.${ext}`;
-            console.log(`[SENDING] ${target}`);
             res.download(filePath, cleanName, ()=>{
                 fs.unlink(filePath, ()=>{});
                 files.forEach(f=>{ if(f!==target) try{fs.unlinkSync(path.join(TEMP_DIR,f))}catch{} });
@@ -265,12 +260,12 @@ app.get('/api/direct', async (req, res) => {
     if (!url) return res.status(400).json({ error: 'URL required' });
     const isYouTube = url.includes('youtube.com') || url.includes('youtu.be');
     if (isYouTube) {
-        const videoId = extractYTId(url);
-        if (videoId) {
-            const pipedInfo = await fetchYTViaPiped(videoId);
-            if (pipedInfo && pipedInfo.pipedData && pipedInfo.pipedData.videoStreams) {
-                const stream = pipedInfo.pipedData.videoStreams.find(s=>s.mimeType.includes('mp4')) || pipedInfo.pipedData.videoStreams[0];
-                if (stream) return res.json({ downloadUrl: stream.url, via: 'piped' });
+        const vid = extractYTId(url);
+        if (vid) {
+            const piped = await fetchYTViaPiped(vid);
+            if (piped && piped.videoStreams) {
+                const stream = piped.videoStreams.find(s=>s.mimeType.includes('mp4') && s.quality.includes('1080')) || piped.videoStreams.find(s=>s.mimeType.includes('mp4')) || piped.videoStreams[0];
+                if (stream) return res.json({ downloadUrl: stream.url, via: 'piped', title: piped.title });
             }
         }
     }
@@ -282,4 +277,17 @@ app.get('/api/direct', async (req, res) => {
     });
 });
 
-app.listen(PORT, ()=>console.log(`✅ Video Download Hub backend running on ${PORT} - YouTube Piped fix`));
+// Clean old temp files every 30 min
+setInterval(() => {
+    try {
+        const files = fs.readdirSync(TEMP_DIR);
+        const now = Date.now();
+        files.forEach(f => {
+            const fp = path.join(TEMP_DIR, f);
+            const stat = fs.statSync(fp);
+            if (now - stat.mtimeMs > 30*60*1000) fs.unlinkSync(fp);
+        });
+    } catch {}
+}, 30*60*1000);
+
+app.listen(PORT, ()=>console.log(`✅ LATEST Video Download Hub v4.0 running on ${PORT} - Piped + All Platforms`));
