@@ -1,12 +1,16 @@
 {
-  "name": "videodownload-backend",
-  "version": "1.0.0",
-  "main": "server.js",
+  "name": "video-download-hub-server",
+  "version": "8.0.0",
+  "description": "SaveFrom style direct downloader - no popup",
+  "main": "BACKEND-FINAL.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node BACKEND-FINAL.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
   }
 }
