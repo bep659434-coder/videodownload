@@ -1,9 +1,8 @@
 {
-  "name": "snapvault-backend",
+  "name": "videodownload-backend",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "postinstall": "pip install -U yt-dlp || pip3 install -U yt-dlp",
     "start": "node server.js"
   },
   "dependencies": {
